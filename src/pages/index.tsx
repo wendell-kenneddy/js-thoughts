@@ -2,7 +2,6 @@ import Head from "next/head";
 
 import { VStack } from "@chakra-ui/react";
 
-import { Header } from "../components/Header";
 import { PostCard } from "../components/PostCard";
 
 const FAKE_POSTS = [
@@ -46,8 +45,6 @@ export default function Home() {
         />
         <title>JSThoughts</title>
       </Head>
-
-      <Header />
 
       <VStack
         as="main"
