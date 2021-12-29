@@ -1,8 +1,10 @@
 import Head from "next/head";
 
-import { Flex } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 
 import { Header } from "../components/Header";
+import { PostCard } from "../components/PostCard";
+
 const FAKE_POSTS = [
   {
     slug: "recriando-map-reduce-e-post",
@@ -47,9 +49,18 @@ export default function Home() {
 
       <Header />
 
-      <Flex as="main" w="90vw" maxW={720} flexDir="column" mx="auto" mt="10">
-        <h1>Content</h1>
-      </Flex>
+      <VStack
+        as="main"
+        w="90vw"
+        maxW={720}
+        mx="auto"
+        mt={{ base: "10", md: "20" }}
+        spacing="10"
+      >
+        {FAKE_POSTS.map((post) => (
+          <PostCard post={post} key={post.slug} />
+        ))}
+      </VStack>
     </>
   );
 }
