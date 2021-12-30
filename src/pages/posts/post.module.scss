@@ -1,0 +1,85 @@
+.postContent {
+  font-size: 0.875rem; // 14px
+
+  * + * {
+    margin-top: 1rem;
+  }
+
+  a {
+    font-weight: 600;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  ul,
+  ol {
+    padding-left: 2.5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  pre {
+    border: 1px solid #121212;
+    line-height: 2rem;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 260px;
+    overflow: auto;
+    border-radius: 4px;
+    padding: 0.5rem;
+  }
+}
+
+@media (min-width: 375px) {
+  .postContent pre {
+    max-width: 300px;
+  }
+}
+
+@media (min-width: 425px) {
+  .postContent pre {
+    max-width: 325px;
+  }
+}
+
+@media (min-width: 555px) {
+  .postContent pre {
+    max-width: 450px;
+  }
+}
+
+@media (min-width: 600px) {
+  .postContent {
+    font-size: 0.9375rem; // 15px
+
+    pre {
+      max-width: 480px;
+    }
+  }
+}
+
+@media (min-width: 700px) {
+  .postContent pre {
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 768px) {
+  .postContent {
+    p,
+    ul li,
+    ol li {
+      font-size: 1.125rem;
+    }
+
+    pre {
+      max-width: 100%;
+    }
+  }
+}
