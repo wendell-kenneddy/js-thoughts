@@ -1,41 +1,65 @@
+import { useMemo } from "react";
+
 import Head from "next/head";
 
 import { VStack } from "@chakra-ui/react";
 
+import { useInfiniteQuery } from "react-query";
+
+import Prismic from "@prismicio/client";
+
+import { getPrismicClient } from "../services/getPrismicClient";
+import { api } from "../services/api";
+
+import { formatDate } from "../lib/formatDate";
+import { calculateReadTime } from "../lib/calculateReadTime";
+
 import { PostCard } from "../components/PostCard";
+import { FetchNextPageButton } from "../components/FetchNextPageButton";
 
-const FAKE_POSTS = [
-  {
-    slug: "recriando-map-reduce-e-post",
-    title: "Recriando map, reduce e post",
-    description: "Some super fake description",
-    publicationDate: "08 dez 2021",
-    readTime: "8min",
-  },
-  {
-    slug: "testes-com-jest",
-    title: "Testes com Jest",
-    description: "Some super fake description",
-    publicationDate: "16 dez 2021",
-    readTime: "16min",
-  },
-  {
-    slug: "migrando-class-components-para-functional-components",
-    title: "Migrando Class Components para Functional Components",
-    description: "Some super fake description",
-    publicationDate: "30 dez 2021",
-    readTime: "32min",
-  },
-  {
-    slug: "criando-um-blog-com-nextjs-e-prismic",
-    title: "Criando um blog com NextJS e Prismic",
-    description: "Some super fake description",
-    publicationDate: "30 dez 2021",
-    readTime: "64min",
-  },
-];
+interface Post {
+  slug: string;
+  title: string;
+  description: string;
+  publicationDate: string;
+  readTime: string;
+}
 
-export default function Home() {
+interface PostDataPage {
+  data: Post[];
+  next_page: string | null;
+}
+
+interface HomeProps {
+  postPagination: PostDataPage[];
+}
+
+export default function Home({ postPagination }: HomeProps) {
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useInfiniteQuery(
+      "posts",
+      async ({ pageParam = null }) => {
+        const response = await api.get<PostDataPage>("/api/posts", {
+          params: {
+            next_page: pageParam,
+          },
+        });
+
+        return response.data;
+      },
+      {
+        initialData: {
+          pages: postPagination,
+          pageParams: [],
+        },
+        getNextPageParam: (lastPage) => lastPage.next_page,
+      }
+    );
+
+  const formattedResults = useMemo(() => {
+    return data?.pages.map((page) => page.data).flat();
+  }, [data]);
+
   return (
     <>
       <Head>
@@ -53,11 +77,55 @@ export default function Home() {
         mx="auto"
         mt={{ base: "10", md: "20" }}
         spacing="10"
+        align="flex-start"
       >
-        {FAKE_POSTS.map((post) => (
-          <PostCard post={post} key={post.slug} />
-        ))}
+        {formattedResults &&
+          formattedResults.map((post) => (
+            <PostCard post={post} key={post.slug} />
+          ))}
+
+        {hasNextPage && (
+          <FetchNextPageButton
+            isLoading={isFetchingNextPage}
+            onClick={() => fetchNextPage()}
+            mt="10"
+          />
+        )}
       </VStack>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const prismic = getPrismicClient();
+
+  const postsResponse = await prismic.query(
+    Prismic.predicates.at("document.type", "post"),
+    {
+      fetch: ["post.title", "post.description", "post.content"],
+      orderings: "[document.first_publication_date desc]",
+      pageSize: 5,
+    }
+  );
+
+  const formattedPosts = postsResponse.results.map((post) => ({
+    slug: post.uid,
+    title: post.data.title,
+    description: post.data.description,
+    publicationDate: formatDate(new Date(String(post.first_publication_date))),
+    readTime: calculateReadTime(post.data.content),
+  }));
+
+  const postPagination = [
+    {
+      data: formattedPosts,
+      next_page: postsResponse.next_page,
+    },
+  ];
+
+  return {
+    props: {
+      postPagination,
+    },
+  };
 }
