@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 
 import Head from "next/head";
+import dynamic from "next/dynamic";
 
-import { VStack } from "@chakra-ui/react";
+import { Spinner, VStack } from "@chakra-ui/react";
 
 import { useInfiniteQuery } from "react-query";
 
@@ -15,7 +16,18 @@ import { formatDate } from "../lib/formatDate";
 import { calculateReadTime } from "../lib/calculateReadTime";
 
 import { PostCard } from "../components/PostCard";
-import { FetchNextPageButton } from "../components/FetchNextPageButton";
+import { FetchNextPageButtonProps } from "../components/FetchNextPageButton";
+
+const FetchNextPageButton = dynamic<FetchNextPageButtonProps>(
+  () =>
+    import("../components/FetchNextPageButton").then(
+      (mod) => mod.FetchNextPageButton
+    ),
+  {
+    loading: () => <Spinner size="md" />,
+    ssr: false,
+  }
+);
 
 interface Post {
   slug: string;
