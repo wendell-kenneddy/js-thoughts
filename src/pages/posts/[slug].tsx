@@ -51,6 +51,10 @@ interface PostProps {
 export default function Post({ post, previousPost, nextPost }: PostProps) {
   const { isFallback } = useRouter();
 
+  // TODO: populate the url related meta tags with the production url
+  const pageTitle = `JSThoughts | ${post.title}`;
+  const pageDescription = post.description;
+
   if (isFallback) {
     return <Loading />;
   }
@@ -59,8 +63,16 @@ export default function Post({ post, previousPost, nextPost }: PostProps) {
     <>
       <Head>
         <meta name="author" content="Wendell Kenneddy" />
-        <meta name="description" content={post.description} />
-        <title>JSThoughts | {post.title}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:site_name" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:locale" content="pt-BR" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content={pageTitle} />
+        <meta property="twitter:description" content={pageDescription} />
+        <title>{pageTitle}</title>
       </Head>
 
       <Flex
