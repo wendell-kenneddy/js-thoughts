@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
 
 import { Box, Divider, Flex, Heading, Spinner, VStack } from "@chakra-ui/react";
 
@@ -17,7 +16,6 @@ import { getNextPost } from "../../lib/getNextPost";
 import { getPreviousPost } from "../../lib/getPreviousPost";
 
 import { PostCardMetadata } from "../../components/PostCard/partials/PostCardMetadata";
-import { Loading } from "../../components/Loading";
 
 const PostPagination = dynamic<PostPaginationProps>(
   () =>
@@ -49,15 +47,9 @@ interface PostProps {
 }
 
 export default function Post({ post, previousPost, nextPost }: PostProps) {
-  const { isFallback } = useRouter();
-
   // TODO: populate the url related meta tags with the production url
   const pageTitle = `JSThoughts | ${post.title}`;
   const pageDescription = post.description;
-
-  if (isFallback) {
-    return <Loading />;
-  }
 
   return (
     <>
@@ -134,7 +126,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: true,
+    fallback: "blocking",
   };
 };
 
