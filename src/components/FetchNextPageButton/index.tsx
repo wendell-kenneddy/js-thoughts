@@ -1,6 +1,6 @@
 import { Button, ButtonProps, useBreakpointValue } from "@chakra-ui/react";
 
-interface FetchNextPageButtonProps extends ButtonProps {}
+export interface FetchNextPageButtonProps extends ButtonProps {}
 
 export function FetchNextPageButton({ ...rest }: FetchNextPageButtonProps) {
   const isWideVersion = useBreakpointValue({
