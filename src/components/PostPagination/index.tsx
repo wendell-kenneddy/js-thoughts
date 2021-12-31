@@ -8,7 +8,7 @@ export interface PaginatedPost {
   title: string;
 }
 
-interface PostPaginationProps {
+export interface PostPaginationProps {
   previousPost: PaginatedPost | null;
   nextPost: PaginatedPost | null;
 }
