@@ -72,14 +72,25 @@ export default function Home({ postPagination }: HomeProps) {
     return data?.pages.map((page) => page.data).flat();
   }, [data]);
 
+  // TODO: populate the url related meta tags with the production url
+  const pageTitle = "JSThoughts";
+  const pageDescription =
+    "Um blog sobre o ecossistema Javascript — por Wendell Kenneddy.";
+
   return (
     <>
       <Head>
-        <meta
-          name="description"
-          content="Posts sobre o ecossistema Javascript."
-        />
-        <title>JSThoughts</title>
+        <meta name="author" content="Wendell Kenneddy" />
+        <meta name="description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:site_name" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:locale" content="pt-BR" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content={pageTitle} />
+        <meta property="twitter:description" content={pageDescription} />
+        <title>{pageTitle}</title>
       </Head>
 
       <VStack
