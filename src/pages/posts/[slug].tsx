@@ -1,8 +1,9 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { Box, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, Spinner, VStack } from "@chakra-ui/react";
 
 import { RichText } from "prismic-dom";
 
@@ -17,9 +18,17 @@ import { getPreviousPost } from "../../lib/getPreviousPost";
 
 import { PostCardMetadata } from "../../components/PostCard/partials/PostCardMetadata";
 import { Loading } from "../../components/Loading";
-import { PostPagination } from "../../components/PostPagination";
+
+const PostPagination = dynamic<PostPaginationProps>(
+  () =>
+    import("../../components/PostPagination").then((mod) => mod.PostPagination),
+  {
+    loading: () => <Spinner size="md" />,
+  }
+);
 
 import styles from "./post.module.scss";
+import { PostPaginationProps } from "../../components/PostPagination";
 
 interface PaginatedPost {
   slug: string;
