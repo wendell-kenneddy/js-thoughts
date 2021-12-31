@@ -2,7 +2,7 @@ import Head from "next/head";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
-import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading, VStack } from "@chakra-ui/react";
 
 import { RichText } from "prismic-dom";
 
@@ -12,11 +12,19 @@ import { getPrismicClient } from "../../services/getPrismicClient";
 
 import { formatDate } from "../../lib/formatDate";
 import { calculateReadTime } from "../../lib/calculateReadTime";
+import { getNextPost } from "../../lib/getNextPost";
+import { getPreviousPost } from "../../lib/getPreviousPost";
 
 import { PostCardMetadata } from "../../components/PostCard/partials/PostCardMetadata";
 import { Loading } from "../../components/Loading";
+import { PostPagination } from "../../components/PostPagination";
 
 import styles from "./post.module.scss";
+
+interface PaginatedPost {
+  slug: string;
+  title: string;
+}
 
 interface PostProps {
   post: {
@@ -27,9 +35,11 @@ interface PostProps {
     lastEditedDate: string;
     readTime: string;
   };
+  nextPost: PaginatedPost | null;
+  previousPost: PaginatedPost | null;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, previousPost, nextPost }: PostProps) {
   const { isFallback } = useRouter();
 
   if (isFallback) {
@@ -50,6 +60,7 @@ export default function Post({ post }: PostProps) {
         maxW={720}
         mx="auto"
         mt={{ base: "10", lg: "20" }}
+        flexDirection="column"
       >
         <article role="article">
           <VStack as="header" align="flex-start" spacing="2">
@@ -72,6 +83,13 @@ export default function Post({ post }: PostProps) {
             mt="10"
           />
         </article>
+
+        {(nextPost || previousPost) && (
+          <>
+            <Divider my="10" />
+            <PostPagination nextPost={nextPost} previousPost={previousPost} />
+          </>
+        )}
       </Flex>
     </>
   );
@@ -117,8 +135,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     readTime: calculateReadTime(response.data.content),
   };
 
+  const nextPost = await getNextPost(response.id);
+  const previousPost = await getPreviousPost(response.id);
+
   return {
-    props: { post },
+    props: { post, nextPost, previousPost },
     revalidate: 60 * 60 * 12, // 12 hours
   };
 };
