@@ -45,7 +45,7 @@ export default function ServerError() {
         >
           <Image
             src="/500.svg"
-            alt="Error interno no servidor"
+            alt="Erro interno no servidor"
             layout="fill"
             objectPosition="center"
             priority
