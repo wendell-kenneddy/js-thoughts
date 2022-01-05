@@ -18,6 +18,7 @@ jest.mock("../../lib/getPreviousPost");
 jest.mock("../../lib/calculateReadTime");
 
 const POST = {
+  slug: "my-new-post",
   title: "My new post",
   description: "A new post.",
   content: "<p>Um novo post.</p>",
@@ -112,6 +113,7 @@ describe("Post page", () => {
     const mockedGetPreviousPost = mocked(getPreviousPost);
     const mockedCalculateReadTime = mocked(calculateReadTime);
     const getByUIDResponse = {
+      uid: "my-new-post",
       first_publication_date: "2021-12-30T13:08:24+0000",
       last_publication_date: "2021-12-31T18:23:15+0000",
       data: {
@@ -129,6 +131,7 @@ describe("Post page", () => {
     const getStaticPropsResponse = expect.objectContaining({
       props: {
         post: {
+          slug: "my-new-post",
           title: "My new post",
           description: "A new post.",
           content: "<p>A new post about Javascript array methods.</p>",
