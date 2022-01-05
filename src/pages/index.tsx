@@ -76,7 +76,7 @@ export default function Home({ postPagination }: HomeProps) {
   const pageTitle = "JSThoughts";
   const pageDescription =
     "Um blog sobre o ecossistema Javascript — por Wendell Kenneddy.";
-  const url = process.env.NEXT_PUBLIC_VERCEL_URL;
+  const url = "https://jsthoughts.vercel.app";
 
   return (
     <>
