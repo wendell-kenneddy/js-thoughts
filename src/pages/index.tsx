@@ -76,6 +76,7 @@ export default function Home({ postPagination }: HomeProps) {
   const pageTitle = "JSThoughts";
   const pageDescription =
     "Um blog sobre o ecossistema Javascript — por Wendell Kenneddy.";
+  const url = process.env.NEXT_PUBLIC_VERCEL_URL;
 
   return (
     <>
@@ -85,12 +86,15 @@ export default function Home({ postPagination }: HomeProps) {
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:site_name" content={pageTitle} />
+        <meta property="og:url" content={url} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:locale" content="pt-BR" />
         <meta property="twitter:card" content="summary" />
         <meta property="twitter:title" content={pageTitle} />
         <meta property="twitter:description" content={pageDescription} />
+        <meta property="twitter:url" content={url} />
         <title>{pageTitle}</title>
+        <link rel="canonical" href={url} />
       </Head>
 
       <VStack
