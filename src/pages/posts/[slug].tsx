@@ -35,6 +35,7 @@ interface PaginatedPost {
 
 interface PostProps {
   post: {
+    slug: string;
     title: string;
     description: string;
     content: string;
@@ -47,9 +48,9 @@ interface PostProps {
 }
 
 export default function Post({ post, previousPost, nextPost }: PostProps) {
-  // TODO: populate the url related meta tags with the production url
   const pageTitle = `JSThoughts | ${post.title}`;
   const pageDescription = post.description;
+  const url = `https://jsthoughts.vercel.app/posts/${post.slug}`;
 
   return (
     <>
@@ -59,12 +60,15 @@ export default function Post({ post, previousPost, nextPost }: PostProps) {
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:site_name" content={pageTitle} />
+        <meta property="og:url" content={url} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:locale" content="pt-BR" />
         <meta property="twitter:card" content="summary" />
         <meta property="twitter:title" content={pageTitle} />
         <meta property="twitter:description" content={pageDescription} />
+        <meta property="twitter:url" content={url} />
         <title>{pageTitle}</title>
+        <link rel="canonical" href={url} />
       </Head>
 
       <Flex
@@ -136,6 +140,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const response = await prismic.getByUID("post", String(slug), {});
 
   const post = {
+    slug: response.uid,
     title: response.data.title,
     description: response.data.description,
     content: RichText.asHtml(response.data.content),
